@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <p>
+            <router-link to="/">首页</router-link>
+            <router-link to="/teacher">教师列表</router-link>
+            <router-link to="/student">会员列表</router-link>
+        </p>
+        <!-- 定义路由出口 -->
+        <router-view ></router-view>
+    </div>
+
+    
+    <script src="vue.min.js"></script>
+    <script src="vue-router.min.js"></script>
+    
+    <script>
+        // 路由组件
+        const Welcome = {template: '<div>欢迎</div>'}
+        const Teacher = {template: '<div>讲师列表<div>'}
+        const Studnet = {template: '<div>会员列表<div>'}
+
+        const routes = [
+            {path: '/',redirect: '/welcome'},
+            {path: '/welcome',component: Welcome},
+            {path: '/teacher',component: Teacher},
+            {path: '/student',component: Studnet}
+        ]
+
+        const router = new VueRouter({
+            routes
+        })
+        new Vue({
+            el: '#app',
+            router
+        })
+    </script>
+</body>
+</html>

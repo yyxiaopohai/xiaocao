@@ -23,6 +23,8 @@
           :on-success="fileUploadSuccess"
           :on-error="fileUploadError"
           :on-exceed="fileUploadExceed"
+          :before-remove="handleBeforeRemove"
+          :on-remove="handleOnRemove"
           :file-list="fileList"
           :limit="1"
           action="http://127.0.0.1:8130/admin/vod/video/upload"
@@ -53,6 +55,7 @@
 </template>
 <script>
 import videoApi from '@/api/edu/video'
+import vodVideoApi from '@/api/vod/video'
 
 export default {
   props: {
@@ -79,6 +82,21 @@ export default {
   },
 
   methods: {
+    handleBeforeRemove(file) {
+      console.log('file', file)
+      return this.$confirm(`确认删除${file.name}吗？`)
+    },
+    handleOnRemove() {
+      vodVideoApi.removeByVodId(this.video.videoSourceId).then(response => {
+        this.video.videoSourceId = ''
+        this.video.videoOriginalName = ''
+        this.update(this.video)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      })
+    },
     open(chapterId, videoId) {
       this.dialogVisible = true
       this.video.chapterId = chapterId

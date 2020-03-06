@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div id="app">
+        <button @click='getTeacherList2()'>获取讲师列表</button>
+        <table v-if="teacherList.length>0" border="1">
+            <tr>
+                <td>id</td>
+                <td>姓名</td>
+                <td>级别</td>
+            </tr>
+            <tr v-for="teacher in teacherList">
+                <td>{{teacher.id}}</td>
+                <td>{{teacher.name}}</td>
+                <td>{{teacher.level===1 ? '高级讲师':'首席讲师'}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="vue.min.js"></script>
+    <script src="axios.min.js"></script>
+
+    <script>
+        new Vue({
+            el:'#app',
+            data:{
+                teacherList:[]
+            },
+            created(){
+                this.getTeacherList2()
+            },
+            methods: {
+                getTeacherList(){
+                    axios.get('http://localhost:8110/admin/edu/teacher/list').then(response=>{
+                        console.log(response)
+                        this.teacherList = response.data.data.items
+                        console.log(this.teacherList)
+                    }).catch()
+                },
+                getTeacherList2(){
+                    const request = axios.create({
+                        baseURL: 'http://localhost:8110',
+                        timeout: 5000
+                    })
+                    const result = request({
+                        url: '/admin/edu/teacher/list',
+                        method: 'get'
+                    })
+                    result.then(response=>{
+                        console.log(response)
+                        this.teacherList = response.data.data.items
+                        console.log(this.teacherList)
+                    }).catch()
+                }
+            }
+        })  
+    </script>
+</body>
+</html>
