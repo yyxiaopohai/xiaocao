@@ -78,15 +78,23 @@
 </template>
 <script>
 import cookie from 'js-cookie'
+import memberApi from '@/api/member'
 export default {
   data() {
     return {
-      loginInfo: {}
+      loginInfo: {},
+      token: ''
     }
   },
 
   created() {
-    this.showInfo()
+    this.token = this.$route.query.token
+
+    if (this.token) { // 微信登录
+      this.wxLogin()
+    } else { // 账号登录和微信登录后显示用户信息
+      this.showInfo()
+    }
   },
 
   methods: {
@@ -104,6 +112,19 @@ export default {
 
       // 跳转页面
       window.location.href = '/'
+    },
+    wxLogin() {
+    // 把token存在cookie中、也可以放在localStorage中
+      cookie.set('guli_token', this.token, { domain: 'localhost' })
+      // 登录成功根据token获取用户信息
+      memberApi.getLoginInfo().then(response => {
+        this.loginInfo = response.data.data.item
+        // 将用户信息记录cookie
+        cookie.set('guli_user', this.loginInfo, { domain: 'localhost' })
+
+        // 跳转页面：擦除url中的token
+        window.location.href = '/'
+      })
     }
   }
 }
